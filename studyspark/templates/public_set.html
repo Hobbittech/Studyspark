@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{{ study_set.title }} · shared on StudySpark{% endblock %}
+{% block meta_og %}
+  <meta property="og:title" content="{{ study_set.title }} — study it on StudySpark ⚡">
+  <meta property="og:description" content="{{ study_set.owner.username }} shared {{ 'flashcards' if study_set.kind == 'flashcards' else 'a quiz' if study_set.kind == 'quiz' else 'a summary' }} with you. No account needed!">
+  <meta property="og:type" content="website">
+{% endblock %}
+{% block content %}
+<div class="container page">
+  <div class="shared-banner card">
+    🤝 <strong>{{ study_set.owner.username }}</strong> shared this study set with you on <strong>StudySpark</strong> ⚡
+  </div>
+
+  <div class="set-header">
+    <div>
+      <span class="set-kind kind-{{ study_set.kind }}">
+        {{ "🃏 Flashcards" if study_set.kind == "flashcards" else "✅ Quiz" if study_set.kind == "quiz" else "📝 Summary" }}
+      </span>
+      <h1>{{ study_set.title }}</h1>
+    </div>
+  </div>
+
+  {% set authed = current_user.is_authenticated %}
+  {% include "_content.html" %}
+
+  <div class="card public-cta center">
+    <h2>Make your own study sets — free ⚡</h2>
+    <p class="muted">Paste your notes. Get flashcards, quizzes, and summaries in seconds.</p>
+    {% if current_user.is_authenticated %}
+      {% if study_set.user_id != current_user.id %}
+      <form method="POST" action="{{ url_for('clone_set', token=study_set.share_token) }}" style="margin-bottom: 10px;">
+        <button class="btn btn-primary btn-lg" type="submit">＋ Save this set to my library</button>
+      </form>
+      {% endif %}
+      <a class="btn btn-ghost btn-lg" href="{{ url_for('create_set') }}">✨ Create my own</a>
+    {% else %}
+      <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Sign up free →</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

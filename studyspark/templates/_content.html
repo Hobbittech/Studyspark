@@ -1,0 +1,70 @@
+{# Shared study-set content — included by both the private set page and the public share page.
+   Expects: study_set (for kind/id), data (parsed JSON), authed (bool) #}
+
+{% if study_set.kind == "flashcards" %}
+  <p class="muted center">👆 Click a card to flip it. <span id="flip-count"></span></p>
+  <div class="flashcard-grid">
+    {% for card in data.flashcards %}
+    <div class="flashcard" tabindex="0" role="button">
+      <div class="flashcard-inner">
+        <div class="flashcard-face flashcard-front">
+          <button class="tts-btn" data-say="{{ card.front }}" title="Read aloud 🔊">🔊</button>
+          <span class="fc-label">Question</span><p>{{ card.front }}</p>
+        </div>
+        <div class="flashcard-face flashcard-back"><span class="fc-label">Answer</span><p>{{ card.back }}</p></div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+{% elif study_set.kind == "quiz" %}
+  <div class="card quiz-score" id="quiz-score" hidden>
+    <h2>🎉 Quiz complete!</h2>
+    <p id="quiz-score-text"></p>
+    <p id="quiz-xp-text" class="muted"></p>
+    {% if authed %}
+      <button class="btn btn-primary" onclick="location.reload()">Try again</button>
+    {% else %}
+      <a class="btn btn-primary" href="{{ url_for('register') }}">Sign up to track your score ⚡</a>
+    {% endif %}
+  </div>
+  <div class="quiz" data-set-id="{{ study_set.id }}" data-authed="{{ 1 if authed else 0 }}">
+    {% for q in data.questions %}
+    <div class="card quiz-question" data-answer="{{ q.answer_index }}">
+      <h3><span class="q-num">{{ loop.index }}.</span> {{ q.question }}</h3>
+      <div class="quiz-options">
+        {% for opt in q.options %}
+        <button class="quiz-option" data-index="{{ loop.index0 }}">
+          <span class="opt-letter">{{ "ABCD"[loop.index0] }}</span> {{ opt }}
+        </button>
+        {% endfor %}
+      </div>
+      {% if q.explanation %}<p class="quiz-explanation" hidden>💡 {{ q.explanation }}</p>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+{% else %}
+  <div class="card summary-card">
+    <h2>📖 Overview</h2>
+    <p class="summary-overview">{{ data.overview }}</p>
+  </div>
+  {% if data.key_points %}
+  <div class="card summary-card">
+    <h2>🎯 Key points</h2>
+    <ul class="key-points">
+      {% for p in data.key_points %}<li>{{ p }}</li>{% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+  {% if data.key_terms %}
+  <div class="card summary-card">
+    <h2>📚 Key terms</h2>
+    <dl class="key-terms">
+      {% for t in data.key_terms %}
+      <div class="term-row"><dt>{{ t.term }}</dt><dd>{{ t.definition }}</dd></div>
+      {% endfor %}
+    </dl>
+  </div>
+  {% endif %}
+{% endif %}

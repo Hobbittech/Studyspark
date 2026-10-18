@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Explore · StudySpark{% endblock %}
+{% block content %}
+<div class="container page">
+  <div class="dash-header">
+    <div>
+      <h1>🌍 Explore shared sets</h1>
+      <p class="muted">Study what the community built. Found a good one? Save it to your library.</p>
+    </div>
+    <a class="btn btn-ghost" href="{{ url_for('leaderboard') }}">🏆 Leaderboard</a>
+  </div>
+
+  <div class="community-stats muted sm">
+    👥 {{ total_users }} students · 📚 {{ total_sets }} study sets created · 🔗 {{ sets|length }} shared publicly
+  </div>
+
+  {% if sets %}
+    <div class="set-grid explore-grid">
+      {% for s in sets %}
+      <div class="card explore-card">
+        <span class="set-kind kind-{{ s.kind }}">
+          {{ "🃏 Flashcards" if s.kind == "flashcards" else "✅ Quiz" if s.kind == "quiz" else "📝 Summary" }}
+        </span>
+        <h3>{{ s.title }}</h3>
+        <p class="muted sm">by <strong>{{ s.owner.username }}</strong> · {{ s.created_at.strftime("%b %d, %Y") }}</p>
+        <div class="explore-actions">
+          <a class="btn btn-primary btn-sm" href="{{ url_for('public_set', token=s.share_token) }}">Study it →</a>
+          {% if current_user.is_authenticated and s.user_id != current_user.id %}
+            <form method="POST" action="{{ url_for('clone_set', token=s.share_token) }}">
+              <button class="btn btn-ghost btn-sm" type="submit">＋ Save to my library</button>
+            </form>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="card empty-state">
+      <div class="empty-emoji">🌱</div>
+      <h3>Nothing shared yet</h3>
+      <p class="muted">Be the first! Open one of your sets and hit <strong>🔗 Share</strong>.</p>
+      {% if current_user.is_authenticated %}
+        <a class="btn btn-primary" href="{{ url_for('dashboard') }}">Go to my library</a>
+      {% else %}
+        <a class="btn btn-primary" href="{{ url_for('register') }}">Sign up free →</a>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

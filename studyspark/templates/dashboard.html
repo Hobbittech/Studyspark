@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · StudySpark{% endblock %}
+{% block content %}
+<div class="container page">
+  <div class="dash-header">
+    <div>
+      <h1>Hey {{ current_user.username }} 👋</h1>
+      <p class="muted">Ready to study smarter today?</p>
+    </div>
+    <a class="btn btn-primary" href="{{ url_for('create_set') }}">✨ New study set</a>
+  </div>
+
+  <div class="stat-grid">
+    <div class="card stat">
+      <div class="stat-emoji">⚡</div>
+      <div>
+        <div class="stat-value">
+          {% if current_user.is_pro %}Unlimited{% else %}{{ remaining }}/{{ free_daily_limit }}{% endif %}
+        </div>
+        <div class="stat-label">{{ "generations left today" if not current_user.is_pro else "Pro plan active" }}</div>
+        {% if not current_user.is_pro %}
+          <div class="progress"><div class="progress-fill" style="width: {{ (used_today / free_daily_limit * 100) | round | int }}%"></div></div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="card stat">
+      <div class="stat-emoji">🔥</div>
+      <div>
+        <div class="stat-value">{{ current_user.streak }} day{{ "s" if current_user.streak != 1 }}</div>
+        <div class="stat-label">study streak — keep it alive!</div>
+      </div>
+    </div>
+    <a class="card stat stat-link" href="{{ url_for('leaderboard') }}">
+      <div class="stat-emoji">⭐</div>
+      <div>
+        <div class="stat-value">{{ current_user.xp }} XP</div>
+        <div class="stat-label">tap to see your rank 🏆</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="library-head">
+    <h2 class="section-title left">Your library ({{ sets|length }})</h2>
+    {% if sets %}
+    <input type="search" id="lib-search" class="lib-search" placeholder="🔎 Search your sets…" aria-label="Search your sets">
+    {% endif %}
+  </div>
+
+  {% if sets %}
+    <div class="set-grid">
+      {% for s in sets %}
+        <a class="set-card" href="{{ url_for('view_set', set_id=s.id) }}">
+          <span class="set-kind kind-{{ s.kind }}">
+            {{ "🃏 Flashcards" if s.kind == "flashcards" else "✅ Quiz" if s.kind == "quiz" else "📝 Summary" }}
+          </span>
+          {% if s.best_score is not none %}<span class="badge badge-score">🏆 {{ s.best_score }}%</span>{% endif %}
+          {% if s.is_shared %}<span class="badge">🔗</span>{% endif %}
+          <h3>{{ s.title }}</h3>
+          <span class="muted sm">{{ s.created_at.strftime("%b %d, %Y") }}</span>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="card empty-state">
+      <div class="empty-emoji">🦉</div>
+      <h3>Nothing here yet!</h3>
+      <p class="muted">Paste your first notes — or upload a textbook PDF — and let StudySpark do the rest.</p>
+      <a class="btn btn-primary" href="{{ url_for('create_set') }}">Create my first set ⚡</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Not found · StudySpark{% endblock %}
+{% block content %}
+<div class="container page narrow center">
+  <div class="empty-emoji">🫠</div>
+  <h1>404 — Lost page</h1>
+  <p class="muted">This page wandered off to study somewhere else.</p>
+  <a class="btn btn-primary" href="{{ url_for('home') }}">Take me home</a>
+</div>
+{% endblock %}

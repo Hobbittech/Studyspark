@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Settings · StudySpark{% endblock %}
+{% block content %}
+<div class="container page narrow">
+  <h1>⚙️ Settings</h1>
+
+  <div class="card settings-card">
+    <h2>Your account</h2>
+    <p class="muted">
+      <strong>{{ current_user.username }}</strong> · {{ current_user.email }} ·
+      member since {{ current_user.created_at.strftime("%b %d, %Y") }}
+      {% if current_user.is_pro %} · <span class="badge badge-pro">PRO</span>{% endif %}
+    </p>
+    <a class="btn btn-ghost" href="{{ url_for('logout') }}">Log out</a>
+  </div>
+
+  <div class="card settings-card">
+    <h2>🔒 Change password</h2>
+    <form method="POST" action="{{ url_for('change_password') }}" class="form">
+      <label>Current password
+        <input type="password" name="current" required autocomplete="current-password">
+      </label>
+      <label>New password
+        <input type="password" name="new" required minlength="6" autocomplete="new-password">
+      </label>
+      <label>Confirm new password
+        <input type="password" name="confirm" required minlength="6" autocomplete="new-password">
+      </label>
+      <button class="btn btn-primary" type="submit">Update password</button>
+    </form>
+  </div>
+
+  <div class="card settings-card danger-zone">
+    <h2>🗑️ Delete account</h2>
+    <p class="muted">This permanently deletes your account, all study sets, XP, and streaks. There is no undo.</p>
+    <form method="POST" action="{{ url_for('delete_account') }}" class="form"
+          onsubmit="return confirm('Really delete your account forever? This cannot be undone!');">
+      <label>Enter your password to confirm
+        <input type="password" name="password" required autocomplete="current-password">
+      </label>
+      <button class="btn btn-danger" type="submit">Delete my account forever</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

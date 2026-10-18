@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}StudySpark — Turn notes into flashcards & quizzes{% endblock %}</title>
+  <meta name="description" content="StudySpark turns your class notes into flashcards, quizzes, and summaries in seconds. Study smarter, not longer.">
+  {% block meta_og %}{% endblock %}
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <!-- Apply the saved theme BEFORE first paint, so there's no white flash -->
+  <script>
+    (function () {
+      var t = localStorage.getItem("theme");
+      if (!t && window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches) t = "dark";
+      if (t) document.documentElement.setAttribute("data-theme", t);
+    })();
+  </script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="{{ url_for('dashboard') if current_user.is_authenticated else url_for('home') }}">
+        <span class="brand-bolt">⚡</span> StudySpark
+      </a>
+      <div class="nav-links">
+        <a href="{{ url_for('explore') }}">🌍 Explore</a>
+        {% if current_user.is_authenticated %}
+          <a href="{{ url_for('dashboard') }}">Dashboard</a>
+          <a href="{{ url_for('create_set') }}">✨ New set</a>
+          <a href="{{ url_for('pricing') }}">Pricing</a>
+          <a class="badge badge-xp" href="{{ url_for('leaderboard') }}" title="Experience points — see the leaderboard!">⭐ {{ current_user.xp }}</a>
+          {% if current_user.streak %}<span class="badge badge-streak" title="Day streak">🔥 {{ current_user.streak }}</span>{% endif %}
+          {% if current_user.is_pro %}<span class="badge badge-pro">PRO</span>{% endif %}
+          <a class="btn btn-ghost btn-sm" href="{{ url_for('settings') }}" title="Settings">⚙️</a>
+        {% else %}
+          <a href="{{ url_for('pricing') }}">Pricing</a>
+          <a href="{{ url_for('login') }}">Log in</a>
+          <a class="btn btn-primary btn-sm" href="{{ url_for('register') }}">Sign up free</a>
+        {% endif %}
+        <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  {% if demo_mode %}
+    <div class="demo-banner">
+      🧪 <strong>Demo mode</strong> — no AI key connected yet, using the offline generator.
+      Add a free Groq key to your <code>.env</code> to unlock real AI (see README, step 3).
+    </div>
+  {% endif %}
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="container flash-stack">
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>⚡ StudySpark © {{ current_year }} — built by a 14-year-old who ships.</span>
+      <span class="footer-links">
+        <a href="{{ url_for('pricing') }}">Pricing</a>
+        <a href="{{ url_for('privacy') }}">Privacy</a>
+        <a href="{{ url_for('terms') }}">Terms</a>
+      </span>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

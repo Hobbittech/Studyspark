@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div class="container hero-inner">
+    <h1>Turn your notes into <span class="gradient-text">flashcards & quizzes</span> in seconds ⚡</h1>
+    <p class="hero-sub">
+      Paste your class notes — or upload a textbook PDF. StudySpark reads them and builds
+      flashcards, practice quizzes, and clean summaries. Study smarter, not longer.
+    </p>
+    <div class="hero-cta">
+      <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Start studying free →</a>
+      <a class="btn btn-ghost btn-lg" href="{{ url_for('pricing') }}">See pricing</a>
+    </div>
+    <p class="hero-note">Free plan included · No credit card · 1 minute to sign up</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Six ways to crush your next test</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🃏</div>
+        <h3>Flashcards</h3>
+        <p>Key facts turned into flip cards. Click to reveal the answer and drill until it sticks.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">✅</div>
+        <h3>Practice quizzes</h3>
+        <p>Multiple-choice questions with instant feedback. Find your weak spots before the exam does.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📝</div>
+        <h3>Smart summaries</h3>
+        <p>Pages of notes condensed into a one-look overview, key points, and a key-term glossary.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3>Study Mode</h3>
+        <p>A one-card-at-a-time trainer with keyboard shortcuts, shuffle, and a progress bar.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔗</div>
+        <h3>Share with your class</h3>
+        <p>Turn any set into a public link. Drop it in the group chat — no account needed to study it.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔥</div>
+        <h3>XP &amp; streaks</h3>
+        <p>Earn XP for studying and keep your daily streak alive. Staying consistent = better grades.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <h2 class="section-title">How it works</h2>
+    <div class="steps">
+      <div class="step"><span class="step-num">1</span><h3>Paste or upload</h3><p>Notes, slides, or a textbook PDF — messy is fine.</p></div>
+      <div class="step-arrow">→</div>
+      <div class="step"><span class="step-num">2</span><h3>Pick a study tool</h3><p>Flashcards, quiz, or summary. The AI does the rest.</p></div>
+      <div class="step-arrow">→</div>
+      <div class="step"><span class="step-num">3</span><h3>Study &amp; ace it</h3><p>Drill in Study Mode, share with friends, level up.</p></div>
+    </div>
+    <div class="center">
+      <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Make my first study set ⚡</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

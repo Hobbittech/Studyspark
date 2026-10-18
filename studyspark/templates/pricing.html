@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Pricing · StudySpark{% endblock %}
+{% block content %}
+<div class="container page narrow">
+  <h1 class="center">Simple pricing 💸</h1>
+  <p class="muted center">Start free. Upgrade when you're hooked.</p>
+
+  <div class="pricing-grid">
+    <div class="card plan-card">
+      <h2>Free</h2>
+      <p class="price">$0 <span class="muted">/ forever</span></p>
+      <ul class="plan-list">
+        <li>✅ {{ free_daily_limit }} generations per day</li>
+        <li>✅ Flashcards, quizzes & summaries</li>
+        <li>✅ Your library saved forever</li>
+        <li>❌ Unlimited generations</li>
+        <li>❌ Priority AI speed</li>
+      </ul>
+      {% if current_user.is_authenticated %}
+        <span class="btn btn-ghost btn-block disabled">Your current plan</span>
+      {% else %}
+        <a class="btn btn-ghost btn-block" href="{{ url_for('register') }}">Sign up free</a>
+      {% endif %}
+    </div>
+
+    <div class="card plan-card plan-featured">
+      <span class="badge badge-pro ribbon">LAUNCHING SOON</span>
+      <h2>Pro ⚡</h2>
+      <p class="price">$4 <span class="muted">/ month</span></p>
+      <ul class="plan-list">
+        <li>✅ <strong>Unlimited</strong> generations</li>
+        <li>✅ Everything in Free</li>
+        <li>✅ Priority AI speed</li>
+        <li>✅ Longer notes, richer sets</li>
+        <li>✅ Support a young indie maker 💜</li>
+      </ul>
+      {% if current_user.is_authenticated and current_user.is_pro %}
+        <span class="btn btn-ghost btn-block disabled">You are Pro! 🎉</span>
+      {% else %}
+        <form method="POST" action="{{ url_for('join_waitlist') }}" class="waitlist-form">
+          <input type="email" name="email" required placeholder="your@email.com">
+          <button class="btn btn-primary btn-block" type="submit">Join the waitlist 🚀</button>
+        </form>
+        <p class="muted sm center">Founding members get Pro <strong>free for 3 months</strong>.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <p class="muted sm center">
+    Why a waitlist? We're building StudySpark in the open with real students.
+    When Pro launches, everyone on the list gets first access and the best price.
+  </p>
+</div>
+{% endblock %}

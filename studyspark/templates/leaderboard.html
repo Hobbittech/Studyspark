@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Leaderboard · StudySpark{% endblock %}
+{% block content %}
+<div class="container page narrow">
+  <h1 class="center">🏆 Leaderboard</h1>
+  <p class="muted center">
+    Top students by XP. Earn XP by creating sets, finishing Study Mode runs, and acing quizzes.
+  </p>
+
+  {% if your_rank %}
+    <div class="card your-rank center">
+      Your rank: <strong>#{{ your_rank }}</strong> of {{ total_users }} students · ⭐ {{ current_user.xp }} XP · 🔥 {{ current_user.streak }} day streak
+    </div>
+  {% endif %}
+
+  <div class="card leaderboard-card">
+    <table class="lb-table">
+      <thead>
+        <tr><th>#</th><th>Student</th><th>⭐ XP</th><th>🔥 Streak</th></tr>
+      </thead>
+      <tbody>
+        {% for u in top %}
+        <tr class="{{ 'lb-you' if current_user.is_authenticated and u.id == current_user.id }}">
+          <td class="lb-rank">
+            {{ "🥇" if loop.index == 1 else "🥈" if loop.index == 2 else "🥉" if loop.index == 3 else loop.index }}
+          </td>
+          <td>
+            <strong>{{ u.username }}</strong>
+            {% if u.is_pro %}<span class="badge badge-pro">PRO</span>{% endif %}
+            {% if current_user.is_authenticated and u.id == current_user.id %}<span class="badge">you</span>{% endif %}
+          </td>
+          <td>{{ u.xp }}</td>
+          <td>{{ u.streak }}d</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if not current_user.is_authenticated %}
+    <div class="card public-cta center">
+      <h2>Think you can reach #1? 😏</h2>
+      <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Sign up free →</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

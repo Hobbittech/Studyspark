@@ -1,0 +1,22 @@
+# One-click deploy config for Render.com (optional but makes setup easier).
+# Render reads this blueprint when you connect the repo: it sets the free plan,
+# build/start commands, and generates a secure SECRET_KEY automatically.
+services:
+  - type: web
+    name: studyspark
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn -w 2 -b 0.0.0.0:$PORT app:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true   # Render makes a random safe one for you 🔒
+      - key: AI_PROVIDER
+        value: groq
+      - key: FREE_DAILY_LIMIT
+        value: "5"
+      # These two you paste in yourself on the Render dashboard:
+      - key: DATABASE_URL
+        sync: false           # <- the Neon connection string
+      - key: GROQ_API_KEY
+        sync: false           # <- your free Groq key

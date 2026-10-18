@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Study Mode · {{ study_set.title }}{% endblock %}
+{% block content %}
+{# The flashcards travel to the browser as JSON so Study Mode runs fully client-side = FAST #}
+<script id="cards-data" type="application/json">{{ data.flashcards | tojson }}</script>
+
+<div class="container page narrow study-wrap"
+     data-set-id="{{ study_set.id }}"
+     data-total="{{ data.flashcards | length }}">
+
+  <div class="study-topbar">
+    <a class="btn btn-ghost btn-sm" href="{{ url_for('view_set', set_id=study_set.id) }}">← Exit</a>
+    <div class="study-progress">
+      <div class="study-progress-label">
+        {% if deck_mode == "due" %}🔁 Reviewing due cards — {% endif %}<span id="study-pos">1</span> / {{ data.flashcards | length }}
+      </div>
+      <div class="progress study-progress-bar"><div class="progress-fill" id="study-fill" style="width: 0%"></div></div>
+    </div>
+    <button class="btn btn-ghost btn-sm" id="study-tts" title="Read the card aloud" type="button">🔊</button>
+    <button class="btn btn-ghost btn-sm" id="study-shuffle" type="button">🔀 Shuffle</button>
+  </div>
+
+  <h1 class="study-title">{{ study_set.title }}</h1>
+
+  <div class="study-card-zone">
+    <div class="flashcard study-card" id="study-card" tabindex="0" role="button">
+      <div class="flashcard-inner">
+        <div class="flashcard-face flashcard-front">
+          <span class="fc-label">Question — click or press Space to flip</span>
+          <p id="study-front"></p>
+        </div>
+        <div class="flashcard-face flashcard-back">
+          <span class="fc-label">Answer</span>
+          <p id="study-back"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="study-buttons">
+      <button class="btn btn-study-again" id="btn-again" type="button">✖ Still learning <small>(←)</small></button>
+      <button class="btn btn-study-know" id="btn-know" type="button">Know it! ✔ <small>(→)</small></button>
+    </div>
+  </div>
+
+  <div class="study-finish card center" id="study-finish" hidden>
+    <div class="empty-emoji">🏁</div>
+    <h2>Round complete!</h2>
+    <p class="muted" id="study-results"></p>
+    <p class="xp-earned" id="study-xp"></p>
+    <div class="hero-cta">
+      <button class="btn btn-primary" id="study-restart" type="button">🔄 Review again</button>
+      <a class="btn btn-ghost" href="{{ url_for('dashboard') }}">Back to dashboard</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

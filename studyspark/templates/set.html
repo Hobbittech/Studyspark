@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}{{ study_set.title }} · StudySpark{% endblock %}
+{% block content %}
+<div class="container page">
+  <div class="set-header">
+    <div>
+      <span class="set-kind kind-{{ study_set.kind }}">
+        {{ "🃏 Flashcards" if study_set.kind == "flashcards" else "✅ Quiz" if study_set.kind == "quiz" else "📝 Summary" }}
+      </span>
+      <h1>{{ study_set.title }}</h1>
+      <p class="muted sm">
+        Created {{ study_set.created_at.strftime("%b %d, %Y") }}
+        {% if study_set.kind == "quiz" and study_set.best_score is not none %}
+          · 🏆 Best score: <strong>{{ study_set.best_score }}%</strong>
+        {% endif %}
+        {% if study_set.share_token %}· 🔗 Shared publicly{% endif %}
+      </p>
+    </div>
+    <div class="set-actions">
+      {% if study_set.kind == "flashcards" %}
+        <a class="btn btn-primary" href="{{ url_for('study_set', set_id=study_set.id) }}">🎯 Study Mode</a>
+        {% if due_count %}
+          <a class="btn btn-review" href="{{ url_for('study_set', set_id=study_set.id, deck='due') }}">🔁 Review due ({{ due_count }})</a>
+        {% endif %}
+        <a class="btn btn-ghost" href="{{ url_for('export_csv', set_id=study_set.id) }}">📥 CSV</a>
+      {% endif %}
+      {% if study_set.share_token %}
+        <form method="POST" action="{{ url_for('unshare_set', set_id=study_set.id) }}">
+          <button class="btn btn-ghost" type="submit">🔒 Unshare</button>
+        </form>
+      {% else %}
+        <form method="POST" action="{{ url_for('share_set', set_id=study_set.id) }}">
+          <button class="btn btn-ghost" type="submit">🔗 Share</button>
+        </form>
+      {% endif %}
+      <form method="POST" action="{{ url_for('delete_set', set_id=study_set.id) }}" onsubmit="return confirm('Delete this study set forever?');">
+        <button class="btn btn-danger" type="submit">Delete</button>
+      </form>
+      <a class="btn btn-ghost" href="{{ url_for('dashboard') }}">← Library</a>
+    </div>
+  </div>
+
+  {% if share_url %}
+  <div class="card share-box">
+    <span class="share-label">🔗 Public share link</span>
+    <div class="share-row">
+      <input type="text" id="share-link" value="{{ share_url }}" readonly onclick="this.select()">
+      <button class="btn btn-primary btn-sm" id="copy-share" type="button">Copy</button>
+    </div>
+    <p class="muted sm">Anyone with this link can study this set — no account needed. Perfect for class group chats!</p>
+  </div>
+  {% endif %}
+
+  {% set authed = true %}
+  {% include "_content.html" %}
+</div>
+{% endblock %}

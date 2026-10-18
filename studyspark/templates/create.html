@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}New study set · StudySpark{% endblock %}
+{% block content %}
+<div class="container page narrow">
+  <h1>✨ Create a study set</h1>
+  <p class="muted">
+    Paste your notes or upload a file. The more detail, the better the results.
+    {% if remaining is not none %}<span class="badge">{{ remaining }}/{{ free_daily_limit }} free generations left today</span>{% endif %}
+  </p>
+
+  <form method="POST" class="card form create-form" enctype="multipart/form-data">
+    <label>Title (optional)
+      <input type="text" name="title" maxlength="120" placeholder="e.g. Biology — Cell Structure (Chapter 4)" value="{{ form.get('title', '') }}">
+    </label>
+
+    <div class="kind-picker" role="radiogroup" aria-label="What to create">
+      <label class="kind-option">
+        <input type="radio" name="kind" value="flashcards" {% if form.get('kind', 'flashcards') == 'flashcards' %}checked{% endif %}>
+        <span class="kind-box"><span class="kind-emoji">🃏</span><strong>Flashcards</strong><small>Flip & memorize</small></span>
+      </label>
+      <label class="kind-option">
+        <input type="radio" name="kind" value="quiz" {% if form.get('kind') == 'quiz' %}checked{% endif %}>
+        <span class="kind-box"><span class="kind-emoji">✅</span><strong>Quiz</strong><small>Test yourself</small></span>
+      </label>
+      <label class="kind-option">
+        <input type="radio" name="kind" value="summary" {% if form.get('kind') == 'summary' %}checked{% endif %}>
+        <span class="kind-box"><span class="kind-emoji">📝</span><strong>Summary</strong><small>Key points fast</small></span>
+      </label>
+    </div>
+
+    <label class="file-drop" for="notes_file">
+      <span class="file-drop-icon">📄</span>
+      <span id="file-drop-text"><strong>Upload notes file</strong> — .txt, .md or .pdf (textbook chapter!), max 5 MB</span>
+      <input type="file" id="notes_file" name="notes_file" accept=".txt,.md,.pdf" hidden>
+    </label>
+
+    <label>Or paste your notes
+      <textarea name="notes" id="notes" rows="10" maxlength="20000"
+        placeholder="Paste your class notes here…&#10;&#10;Example:&#10;Mitochondria are the powerhouse of the cell. They produce ATP through cellular respiration. The inner membrane has folds called cristae…">{{ form.get('notes', '') }}</textarea>
+    </label>
+    <p class="muted sm right"><span id="char-count">0</span>/20,000 characters · at least 50 needed (pasted + file combined)</p>
+
+    <button class="btn btn-primary btn-lg btn-block" type="submit">⚡ Generate my study set</button>
+    <p class="muted sm center">Usually takes 5–15 seconds. One generation counts against your daily limit.</p>
+  </form>
+</div>
+{% endblock %}

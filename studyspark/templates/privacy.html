@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Privacy · StudySpark{% endblock %}
+{% block content %}
+<div class="container page narrow prose">
+  <h1>Privacy Policy</h1>
+  <p class="muted">Last updated: {{ current_year }}</p>
+  <h2>What we store</h2>
+  <ul>
+    <li><strong>Your account:</strong> username, email, and a securely hashed password (we can never see your real password).</li>
+    <li><strong>Your study sets:</strong> the notes you paste and the material generated from them, so you can find them later in your library.</li>
+    <li><strong>Usage counters:</strong> how many generations you run per day, to enforce plan limits.</li>
+  </ul>
+  <h2>What we never do</h2>
+  <ul>
+    <li>We never sell your data. Ever.</li>
+    <li>We never show your notes or study sets to other users.</li>
+  </ul>
+  <h2>AI processing</h2>
+  <p>Your notes are sent to an AI provider (currently Groq) solely to generate your study materials, and are not used to train AI models (per provider API terms).</p>
+  <h2>Contact</h2>
+  <p>Questions? Email the maker. (Add your email here before launch!)</p>
+</div>
+{% endblock %}
